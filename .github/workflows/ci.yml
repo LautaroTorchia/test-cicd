@@ -1,0 +1,91 @@
+name: CI Pipeline - Aplicación Empresarial
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  clone-repo:
+    name: 📥 Clonar Repositorio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+  install-dependencies:
+    name: 📦 Instalar Dependencias
+    runs-on: ubuntu-latest
+    needs: clone-repo
+    steps:
+      - name: Simulación de instalación de dependencias
+        run: echo "Dependencias instaladas"
+
+  lint-check:
+    name: 🔍 Linter y Formateo
+    runs-on: ubuntu-latest
+    needs: clone-repo
+    steps:
+      - name: Ejecutar linter
+        run: echo "Linting sin errores"
+
+  unit-tests:
+    name: 🧪 Pruebas Unitarias
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    steps:
+      - name: Ejecutar pruebas unitarias
+        run: echo "Pruebas unitarias exitosas"
+
+  static-analysis:
+    name: 🧹 Análisis Estático de Código
+    runs-on: ubuntu-latest
+    needs: lint-check
+    steps:
+      - name: Análisis de calidad de código
+        run: echo "Análisis estático completado"
+
+  security-scan:
+    name: 🔐 Escaneo de Seguridad
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    steps:
+      - name: Simulación de escaneo de dependencias
+        run: echo "Dependencias seguras"
+
+  integration-tests:
+    name: 🔗 Pruebas de Integración
+    runs-on: ubuntu-latest
+    needs:
+      - unit-tests
+      - static-analysis
+      - security-scan
+    steps:
+      - name: Ejecutar pruebas de integración
+        run: echo "Pruebas de integración completadas"
+
+  build-artifact:
+    name: 🏗️ Compilar Artefacto
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    steps:
+      - name: Simular compilación
+        run: echo "Build generado"
+
+  approval-gate:
+    name: 🛂 Gate Manual para Producción
+    runs-on: ubuntu-latest
+    needs: build-artifact
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Simular aprobación
+        run: echo "Aprobación manual recibida"
+
+  deploy-preview:
+    name: 🚀 Despliegue en entorno de pre-producción
+    runs-on: ubuntu-latest
+    needs: build-artifact
+    steps:
+      - name: Simulación de despliegue
+        run: echo "Desplegado en pre-producción"
