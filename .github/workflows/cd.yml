@@ -1,0 +1,82 @@
+name: CD Pipeline - Aplicación Empresarial
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline - Aplicación Empresarial"]
+    types:
+      - completed
+
+jobs:
+  package-artifact:
+    name: 📦 Empaquetar artefacto (Docker/Image)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Simular empaquetado
+        run: echo "Artefacto Docker generado exitosamente"
+
+  versioning:
+    name: 🏷️ Versionado SemVer
+    runs-on: ubuntu-latest
+    needs: package-artifact
+    steps:
+      - name: Simular generación de versión
+        run: echo "Versión 1.0.0 generada y etiquetada"
+
+  deploy-dev:
+    name: 🚀 Despliegue en Entorno Dev
+    runs-on: ubuntu-latest
+    needs: versioning
+    steps:
+      - name: Simular despliegue en Dev
+        run: echo "Aplicación desplegada en entorno de desarrollo"
+
+  deploy-qa:
+    name: 🔬 Despliegue en QA
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    steps:
+      - name: Simular despliegue en QA
+        run: echo "Aplicación desplegada en entorno QA"
+
+  security-scan:
+    name: 🔐 Escaneo de Seguridad Post-QA
+    runs-on: ubuntu-latest
+    needs: deploy-qa
+    steps:
+      - name: Simulación de escaneo
+        run: echo "Escaneo de seguridad aprobado"
+
+  performance-test:
+    name: 🚦 Pruebas de Performance
+    runs-on: ubuntu-latest
+    needs: deploy-qa
+    steps:
+      - name: Simulación de pruebas de rendimiento
+        run: echo "Performance dentro de parámetros esperados"
+
+  deploy-staging:
+    name: 🧪 Despliegue en Staging
+    runs-on: ubuntu-latest
+    needs:
+      - security-scan
+      - performance-test
+    steps:
+      - name: Simular despliegue en Staging
+        run: echo "Aplicación desplegada en staging"
+
+  approval-gate:
+    name: 🛂 Aprobación Manual para Producción
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    steps:
+      - name: Simular aprobación manual
+        run: echo "Aprobación manual recibida"
+
+  deploy-prod:
+    name: 🏁 Despliegue en Producción
+    runs-on: ubuntu-latest
+    needs: approval-gate
+    steps:
+      - name: Simular despliegue en Producción
+        run: echo "Aplicación desplegada en entorno productivo"
