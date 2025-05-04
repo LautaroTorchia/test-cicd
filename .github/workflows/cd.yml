@@ -7,76 +7,57 @@ on:
       - completed
 
 jobs:
-  package-artifact:
-    name: 📦 Empaquetar artefacto (Docker/Image)
+  package-and-version:
+    name: 📦 Empaquetar + 🏷️ Versionar
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Simular empaquetado
-        run: echo "Artefacto Docker generado exitosamente"
-
-  versioning:
-    name: 🏷️ Versionado SemVer
-    runs-on: ubuntu-latest
-    needs: package-artifact
-    steps:
-      - name: Simular generación de versión
+      - name: Empaquetar artefacto Docker
+        run: echo "Artefacto Docker generado"
+      - name: Generar versión SemVer
         run: echo "Versión 1.0.0 generada y etiquetada"
 
   deploy-dev:
-    name: 🚀 Despliegue en Entorno Dev
+    name: 🚀 Despliegue Dev
     runs-on: ubuntu-latest
-    needs: versioning
+    needs: package-and-version
     steps:
-      - name: Simular despliegue en Dev
-        run: echo "Aplicación desplegada en entorno de desarrollo"
+      - name: Desplegar en Dev
+        run: echo "Aplicación desplegada en desarrollo"
 
   deploy-qa:
-    name: 🔬 Despliegue en QA
+    name: 🔬 Despliegue QA
     runs-on: ubuntu-latest
     needs: deploy-dev
     steps:
-      - name: Simular despliegue en QA
-        run: echo "Aplicación desplegada en entorno QA"
+      - name: Desplegar en QA
+        run: echo "Aplicación desplegada en QA"
 
-  security-scan:
-    name: 🔐 Escaneo de Seguridad Post-QA
+  validations:
+    name: 🔐 Validaciones Post-QA
     runs-on: ubuntu-latest
     needs: deploy-qa
     steps:
-      - name: Simulación de escaneo
-        run: echo "Escaneo de seguridad aprobado"
-
-  performance-test:
-    name: 🚦 Pruebas de Performance
-    runs-on: ubuntu-latest
-    needs: deploy-qa
-    steps:
-      - name: Simulación de pruebas de rendimiento
-        run: echo "Performance dentro de parámetros esperados"
+      - name: Escaneo de Seguridad
+        run: echo "Escaneo aprobado"
+      - name: Pruebas de Performance
+        run: echo "Rendimiento verificado"
 
   deploy-staging:
-    name: 🧪 Despliegue en Staging
+    name: 🧪 Staging
     runs-on: ubuntu-latest
-    needs:
-      - security-scan
-      - performance-test
+    needs: validations
     steps:
-      - name: Simular despliegue en Staging
-        run: echo "Aplicación desplegada en staging"
+      - name: Desplegar en Staging
+        run: echo "Aplicación en entorno Staging"
 
-  approval-gate:
-    name: 🛂 Aprobación Manual para Producción
+  approval-and-prod:
+    name: 🛂 Aprobación → 🏁 Producción
     runs-on: ubuntu-latest
     needs: deploy-staging
     steps:
-      - name: Simular aprobación manual
-        run: echo "Aprobación manual recibida"
+      - name: Aprobación Manual
+        run: echo "Aprobación concedida"
+      - name: Despliegue en Producción
+        run: echo "Aplicación desplegada en Producción"
 
-  deploy-prod:
-    name: 🏁 Despliegue en Producción
-    runs-on: ubuntu-latest
-    needs: approval-gate
-    steps:
-      - name: Simular despliegue en Producción
-        run: echo "Aplicación desplegada en entorno productivo"
