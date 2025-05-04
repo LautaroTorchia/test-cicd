@@ -13,51 +13,52 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Empaquetar artefacto Docker
-        run: echo "Artefacto Docker generado"
-      - name: Generar versión SemVer
+        run: echo "Docker image creada"
+      - name: Generar versión
         run: echo "Versión 1.0.0 generada y etiquetada"
 
-  deploy-dev:
-    name: 🚀 Despliegue Dev
+  setup-environment:
+    name: 🛠️ Preparar Entorno de Producción
     runs-on: ubuntu-latest
     needs: package-and-version
     steps:
-      - name: Desplegar en Dev
-        run: echo "Aplicación desplegada en desarrollo"
+      - name: Simular preparación
+        run: echo "Infraestructura validada y configurada"
 
-  deploy-qa:
-    name: 🔬 Despliegue QA
+  notify-slack:
+    name: 📢 Notificar a Slack
     runs-on: ubuntu-latest
-    needs: deploy-dev
+    needs: package-and-version
     steps:
-      - name: Desplegar en QA
-        run: echo "Aplicación desplegada en QA"
+      - name: Enviar mensaje a Slack
+        run: echo "Mensaje enviado al canal #deployments"
 
-  validations:
-    name: 🔐 Validaciones Post-QA
+  pre-approval-checks:
+    name: 🔍 Validaciones Post-Versionado
     runs-on: ubuntu-latest
-    needs: deploy-qa
+    needs: package-and-version
     steps:
       - name: Escaneo de Seguridad
-        run: echo "Escaneo aprobado"
-      - name: Pruebas de Performance
-        run: echo "Rendimiento verificado"
+        run: echo "Sin vulnerabilidades detectadas"
+      - name: Verificar límites de rendimiento
+        run: echo "Performance aceptable"
 
-  deploy-staging:
-    name: 🧪 Staging
+  approval-gate:
+    name: 🛂 Aprobación Manual
     runs-on: ubuntu-latest
-    needs: validations
+    needs:
+      - setup-environment
+      - notify-slack
+      - pre-approval-checks
     steps:
-      - name: Desplegar en Staging
-        run: echo "Aplicación en entorno Staging"
+      - name: Esperar aprobación
+        run: echo "Aprobación manual recibida"
 
-  approval-and-prod:
-    name: 🛂 Aprobación → 🏁 Producción
+  deploy-production:
+    name: 🏁 Despliegue en Producción
     runs-on: ubuntu-latest
-    needs: deploy-staging
+    needs: approval-gate
     steps:
-      - name: Aprobación Manual
-        run: echo "Aprobación concedida"
-      - name: Despliegue en Producción
-        run: echo "Aplicación desplegada en Producción"
+      - name: Desplegar artefacto
+        run: echo "Aplicación desplegada en producción"
 
